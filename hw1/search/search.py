@@ -61,7 +61,15 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
-def searchHelper(problem, searchType):
+def searchHelper(problem, searchType, heuristic):
+    """
+    Helper method for all search problems
+
+    searchType: String specifies type of search
+    heuristic: function for different heuristic
+
+    """
+
     type = {"dfs": util.Stack(), "bfs": util.Queue(), "ucs": util.PriorityQueue(), "a*": util.PriorityQueue()}
 
     from game import Directions
@@ -72,10 +80,11 @@ def searchHelper(problem, searchType):
 
     successors = problem.getSuccessors(rootState)
 
+    # storing visited node and value represents their paths
     visitedPaths = {rootState:[]}
     container = type[searchType]
-    if searchType == "ucs":
-        container.push(rootState, priorityFunction(problem, []))
+    if searchType == "ucs" or searchType == "a*":
+        container.push(rootState, priorityFunction(problem, rootState, [], heuristic))
     else:
         container.push(rootState)
 
@@ -94,15 +103,17 @@ def searchHelper(problem, searchType):
                 nextPath = list(curPath)
                 nextPath.append(directionsMap[next[1]])
                 visitedPaths[nextState] = nextPath
-                if searchType == "ucs":
-                    container.push(nextState, priorityFunction(problem, nextPath))
+                if searchType == "ucs" or searchType == "a*":
+                    container.push(nextState, priorityFunction(problem, nextState, nextPath, heuristic))
                 else:
                     container.push(nextState)
 
     return []
 
-def priorityFunction(problem, path):
-    return  problem.getCostOfActions(path)
+def priorityFunction(problem, state, path, heuristic):
+    g = problem.getCostOfActions(path)
+    h = heuristic(state, problem)
+    return g + h
 
 def tinyMazeSearch(problem):
     """
@@ -130,20 +141,20 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
 
-    return searchHelper(problem, "dfs")
+    return searchHelper(problem, "dfs", None)
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
 
-    return searchHelper(problem, "bfs")
+    return searchHelper(problem, "bfs", None)
 
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    return searchHelper(problem, "ucs")
+    return searchHelper(problem, "ucs", nullHeuristic)
 
     util.raiseNotDefined()
 
@@ -157,11 +168,7 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-
-    start = problem 
+    return searchHelper(problem, "a*", heuristic)
 
     util.raiseNotDefined()
 
