@@ -62,7 +62,7 @@ class SearchProblem:
         util.raiseNotDefined()
 
 def searchHelper(problem, searchType):
-    type = {"dfs": util.Stack(), "bfs": util.Queue(), "ucs": util.PriorityQueue()}
+    type = {"dfs": util.Stack(), "bfs": util.Queue(), "ucs": util.PriorityQueue(), "a*": util.PriorityQueue()}
 
     from game import Directions
 
@@ -157,6 +157,12 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+
+    start = problem 
+
     util.raiseNotDefined()
 
 
