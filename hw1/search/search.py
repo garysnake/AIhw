@@ -74,7 +74,10 @@ def searchHelper(problem, searchType):
 
     visitedPaths = {rootState:[]}
     container = type[searchType]
-    container.push(rootState)
+    if searchType == "ucs":
+        container.push(rootState, priorityFunction(problem, []))
+    else:
+        container.push(rootState)
 
     while not container.isEmpty():
         curState = container.pop()
@@ -91,10 +94,15 @@ def searchHelper(problem, searchType):
                 nextPath = list(curPath)
                 nextPath.append(directionsMap[next[1]])
                 visitedPaths[nextState] = nextPath
-                container.push(nextState)
+                if searchType == "ucs":
+                    container.push(nextState, priorityFunction(problem, nextPath))
+                else:
+                    container.push(nextState)
 
     return []
 
+def priorityFunction(problem, path):
+    return  problem.getCostOfActions(path)
 
 def tinyMazeSearch(problem):
     """
@@ -124,7 +132,6 @@ def depthFirstSearch(problem):
 
     return searchHelper(problem, "dfs")
 
-
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
@@ -136,16 +143,7 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-
-    start = problem.getStartState()
-    print start
-
-    print get
-
-    return [s,s,w,w]
+    return searchHelper(problem, "ucs")
 
     util.raiseNotDefined()
 
