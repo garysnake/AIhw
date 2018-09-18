@@ -40,7 +40,7 @@ from game import Actions
 import util
 import time
 import search
-
+git reset --hard
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
 
@@ -82,7 +82,7 @@ class SearchAgent(Agent):
         func = getattr(search, fn)
         if 'heuristic' not in func.func_code.co_varnames:
             print('[SearchAgent] using function ' + fn)
-            self.searchFunction = func
+            selgit reset --hardf.searchFunction = func
         else:
             if heuristic in globals().keys():
                 heur = globals()[heuristic]
