@@ -376,6 +376,24 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+    top, right = walls.height-2, walls.width-2
+    longSide , shortSide = max(top, right), min(top, right)
+
+    curxy = state[0]
+    numCornersLeft = 4 - len(state[1])
+    cornersLeft = []
+
+    for corner in problem.corners:
+        if corner not in state[1]:
+            cornersLeft.append(corner)
+
+    # start from the corner and end with a corner
+    if numCornersLeft == 4:
+        return 2 * shortSide + longSide
+    elif numCornersLeft == 3:
+        return shortSide + longSide
+    elif numCornersLeft == 2:
+        return abs(cornersLeft[1][0] - cornersLeft[0][0]) + abs(cornersLeft[1][1] - cornersLeft[0][1])
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
@@ -470,7 +488,39 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foods = foodGrid.asList()
+    if len(foods) == 0:
+        return 0
+    closeDistance = abs(foods[0][0] - position[0]) + abs(foods[0][1] - position[1])
+    farDistance = 0
+    closeFoods = []
+    farFoods = []
+
+    # find the farest food and cloest food
+    for food in foods:
+        distance = abs(food[0] - position[0]) + abs(food[1] - position[1])
+        if distance > farDistance:
+            farDistance = distance
+            farFoods = [food]
+        elif distance == farDistance:
+            farFoods.append(food)
+
+        if distance < closeDistance:
+            closeDistance = distance
+            closeFoods = [food]
+        elif distance == closeDistance:
+            closeFoods.append(food)
+
+    # find the distance between farest and closet food
+    distanceBtw = abs(closeFoods[0][0] - farFoods[0][0]) + abs(closeFoods[0][1] - farFoods[0][1])
+
+    # Since it could be multiple closet food and multiple farest food
+    # find the pair with shortest distance to ensure Admissibility
+    for c in closeFoods:
+        for f in farFoods:
+            distanceBtw = min(abs(c[0] - f[0]) + abs(c[1] - f[1]), distanceBtw)
+    # Distance of node first go to the closet food and reach to the farest
+    return distanceBtw + closeDistance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
