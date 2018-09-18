@@ -98,7 +98,6 @@ def searchHelper(problem, searchType, heuristic):
         successors = problem.getSuccessors(curState)
 
         for next in successors:
-            # ignore repetitive state (state is more than position)
             if next[0] not in visitedPaths.keys():
                 nextState = next[0]
                 nextPath = list(curPath)
@@ -109,11 +108,9 @@ def searchHelper(problem, searchType, heuristic):
                 else:
                     container.push(nextState)
 
-    # shouldn't reach here as long as there is a solution
     return []
 
 def priorityFunction(problem, state, path, heuristic):
-    # calculate the priority, heurisitc can be 0 by using null heurisitc
     g = problem.getCostOfActions(path)
     h = heuristic(state, problem)
     return g + h
