@@ -69,7 +69,7 @@ def searchHelper(problem, searchType, heuristic):
     heuristic: function for different heuristic
 
     """
-
+    ######### look-ahead problem NEED CHANGE
     type = {"dfs": util.Stack(), "bfs": util.Queue(), "ucs": util.PriorityQueue(), "a*": util.PriorityQueue()}
 
     from game import Directions
@@ -81,33 +81,34 @@ def searchHelper(problem, searchType, heuristic):
     successors = problem.getSuccessors(rootState)
 
     # storing visited node and value represents their paths
-    visitedPaths = {rootState:[]}
+    # visitedPaths = {rootState:[]}
+    visitedNodes = set()
     container = type[searchType]
     if searchType == "ucs" or searchType == "a*":
-        container.push(rootState, priorityFunction(problem, rootState, [], heuristic))
+        container.push((rootState, []), priorityFunction(problem, rootState, [], heuristic))
     else:
-        container.push(rootState)
+        container.push((rootState, []))
 
     while not container.isEmpty():
-        curState = container.pop()
-        curPath = visitedPaths[curState]
+        cur = container.pop()
+        curState = cur[0]
+        curPath = cur[1]
 
         if problem.isGoalState(curState):
             return curPath
 
-        successors = problem.getSuccessors(curState)
-
-        for next in successors:
-            # ignore repetitive state (state is more than position)
-            if next[0] not in visitedPaths.keys():
+        if curState not in visitedNodes:
+            visitedNodes.add(curState)
+            successors = problem.getSuccessors(curState)
+            for next in successors:
+                # ignore repetitive state (state is more than position)
                 nextState = next[0]
                 nextPath = list(curPath)
                 nextPath.append(directionsMap[next[1]])
-                visitedPaths[nextState] = nextPath
                 if searchType == "ucs" or searchType == "a*":
-                    container.push(nextState, priorityFunction(problem, nextState, nextPath, heuristic))
+                    container.push((nextState, nextPath), priorityFunction(problem, nextState, nextPath, heuristic))
                 else:
-                    container.push(nextState)
+                    container.push((nextState, nextPath))
 
     # shouldn't reach here as long as there is a solution
     return []
