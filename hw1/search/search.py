@@ -70,11 +70,10 @@ def searchHelper(problem, searchType, heuristic):
 
     """
     ######### look-ahead problem NEED CHANGE
+
     type = {"dfs": util.Stack(), "bfs": util.Queue(), "ucs": util.PriorityQueue(), "a*": util.PriorityQueue()}
 
     from game import Directions
-
-    directionsMap = {"South": Directions.SOUTH, "North": Directions.NORTH, "East": Directions.EAST, "West": Directions.WEST}
 
     rootState = problem.getStartState()
 
@@ -104,7 +103,7 @@ def searchHelper(problem, searchType, heuristic):
                 # ignore repetitive state (state is more than position)
                 nextState = next[0]
                 nextPath = list(curPath)
-                nextPath.append(directionsMap[next[1]])
+                nextPath.append(next[1])
                 if searchType == "ucs" or searchType == "a*":
                     container.push((nextState, nextPath), priorityFunction(problem, nextState, nextPath, heuristic))
                 else:
