@@ -77,7 +77,7 @@ def searchHelper(problem, searchType, heuristic):
 
     rootState = problem.getStartState()
 
-    successors = problem.getSuccessors(rootState)
+    # successors = problem.getSuccessors(rootState)
 
     # storing visited node and value represents their paths
     # visitedPaths = {rootState:[]}

@@ -383,18 +383,26 @@ def cornersHeuristic(state, problem):
     numCornersLeft = 4 - len(state[1])
     cornersLeft = []
 
-    for corner in problem.corners:
-        if corner not in state[1]:
-            cornersLeft.append(corner)
-
+    distance = closetCornerManhattanDistance(state[0], corners)
     # start from the corner and end with a corner
     if numCornersLeft == 4:
-        return 2 * shortSide + longSide
+        return distance + 2 * shortSide + longSide
     elif numCornersLeft == 3:
-        return shortSide + longSide
+        return distance + shortSide + longSide
     elif numCornersLeft == 2:
-        return abs(cornersLeft[1][0] - cornersLeft[0][0]) + abs(cornersLeft[1][1] - cornersLeft[0][1])
+        return distance
     return 0 # Default to trivial solution
+
+def closetCornerManhattanDistance(start, corners):
+    closetDistance = abs(start[0] - corners[0][0]) + abs(start[1] - corners[0][1])
+    closetCorner = corners[0]
+    for corner in corners:
+        distance = abs(start[0] - corner[0]) + abs(start[1] - corner[1])
+        if start != corner and distance < closetDistance:
+            distance = min(distance, closetDistance)
+            closetCorner = corner
+    return distance
+
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
