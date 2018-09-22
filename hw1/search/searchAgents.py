@@ -376,32 +376,31 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    top, right = walls.height-2, walls.width-2
-    longSide , shortSide = max(top, right), min(top, right)
-
     curxy = state[0]
-    numCornersLeft = 4 - len(state[1])
-    cornersLeft = []
+    corners = list(corners)
+    visitedCorners = list(state[1])
+    for corner in visitedCorners:
+        corners.remove(corner)
 
-    distance = closetCornerManhattanDistance(state[0], corners)
-    # start from the corner and end with a corner
-    if numCornersLeft == 4:
-        return distance + 2 * shortSide + longSide
-    elif numCornersLeft == 3:
-        return distance + shortSide + longSide
-    elif numCornersLeft == 2:
-        return distance
-    return 0 # Default to trivial solution
+    distance = closetCornerManhattanDistance(curxy, corners)
+
+    return distance # Default to trivial solution
 
 def closetCornerManhattanDistance(start, corners):
-    closetDistance = abs(start[0] - corners[0][0]) + abs(start[1] - corners[0][1])
-    closetCorner = corners[0]
-    for corner in corners:
-        distance = abs(start[0] - corner[0]) + abs(start[1] - corner[1])
-        if start != corner and distance < closetDistance:
-            distance = min(distance, closetDistance)
-            closetCorner = corner
-    return distance
+    if len(corners) == 0:
+        return 0
+    sum = 0
+    temp = []
+    while len(corners) > 0:
+        for corner in corners:
+            temp.append((util.manhattanDistance(start, corner), corner))
+        distance, start = min(temp)
+        sum += distance
+        if start in corners:
+            corners.remove(start)
+        temp = []
+
+    return sum
 
 
 class AStarCornersAgent(SearchAgent):
